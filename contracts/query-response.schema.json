@@ -1,0 +1,33 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/LordKay-sudo/bedrock-rag-agentcore-split/contracts/query-response.schema.json",
+  "title": "UnifiedQueryResponse",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["pathUsed", "text"],
+  "properties": {
+    "correlationId": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "pathUsed": {
+      "type": "string",
+      "enum": ["rag", "agent"]
+    },
+    "text": {
+      "type": "string"
+    },
+    "citations": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["sourceId", "excerpt"],
+        "properties": {
+          "sourceId": { "type": "string" },
+          "excerpt": { "type": "string" }
+        }
+      }
+    }
+  }
+}

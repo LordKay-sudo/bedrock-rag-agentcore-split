@@ -1,0 +1,74 @@
+openapi: 3.0.3
+info:
+  title: RAG gateway
+  version: 0.1.0
+  description: >
+    HTTP surface for the RAG path. Request shape matches `query-envelope.schema.json`;
+    response matches `query-response.schema.json`.
+servers:
+  - url: http://localhost:8080
+paths:
+  /actuator/health:
+    get:
+      summary: Liveness
+      tags: [ops]
+      responses:
+        "200":
+          description: UP
+  /v1/query:
+    post:
+      summary: RAG query (stub until KB + Bedrock)
+      tags: [query]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/QueryEnvelope"
+      responses:
+        "200":
+          description: Response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/QueryResponse"
+        "400":
+          description: Validation error
+components:
+  schemas:
+    QueryEnvelope:
+      type: object
+      required: [message]
+      properties:
+        message:
+          type: string
+          minLength: 1
+        preferredPath:
+          type: string
+          enum: [rag, agent, auto]
+          default: auto
+        correlationId:
+          type: string
+          format: uuid
+    QueryResponse:
+      type: object
+      required: [pathUsed, text]
+      properties:
+        correlationId:
+          type: string
+          format: uuid
+        pathUsed:
+          type: string
+          enum: [rag, agent]
+        text:
+          type: string
+        citations:
+          type: array
+          items:
+            type: object
+            required: [sourceId, excerpt]
+            properties:
+              sourceId:
+                type: string
+              excerpt:
+                type: string

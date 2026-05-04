@@ -26,7 +26,10 @@ Repository layout: **service contracts**, **documented tradeoffs**, and **infra 
 
 ## Current state
 
-Skeleton: layout and docs only; application code and pipelines not implemented yet.
+- **rag-gateway**: Spring Boot 3.4, `POST /v1/query`, stub RAG service, actuator health, unit tests (`mvn verify`).
+- **agent-runtime**: FastAPI stub on port **8081**, Dockerfile, pytest.
+- **contracts**: JSON Schema + OpenAPI for the shared envelope.
+- **CI**: GitHub Actions (`.github/workflows/ci.yml`) runs Maven and pytest on `main` and PRs.
 
 ## References
 
