@@ -1,0 +1,44 @@
+# OS
+Thumbs.db
+Desktop.ini
+.DS_Store
+
+# IDEs
+.idea/
+.vscode/
+*.iml
+
+# Java / Maven / Gradle
+target/
+build/
+.gradle/
+*.class
+*.jar
+*.war
+*.log
+
+# Python
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+dist/
+*.egg-info/
+
+# Env and secrets
+.env
+.env.*
+!.env.example
+*.pem
+
+# Terraform
+.terraform/
+*.tfstate
+*.tfstate.*
+crash.log
+
+# Node (if UI added later)
+node_modules/
