@@ -1,0 +1,26 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/LordKay-sudo/bedrock-rag-agentcore-split/contracts/query-envelope.schema.json",
+  "title": "UnifiedQueryEnvelope",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["message"],
+  "properties": {
+    "message": {
+      "type": "string",
+      "minLength": 1,
+      "description": "End-user or system text for the model path."
+    },
+    "preferredPath": {
+      "type": "string",
+      "enum": ["rag", "agent", "auto"],
+      "default": "auto",
+      "description": "Routing hint for the orchestration edge."
+    },
+    "correlationId": {
+      "type": "string",
+      "format": "uuid",
+      "description": "Optional idempotency / tracing key; server may generate if omitted."
+    }
+  }
+}

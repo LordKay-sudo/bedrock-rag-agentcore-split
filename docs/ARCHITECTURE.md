@@ -14,6 +14,13 @@ The edge (gateway or BFF) classifies the user request and routes to one path, bo
 - RAG path: KB availability, embedding/retrieval latency, model quotas.
 - Agent path: cold start, tool timeouts, session limits.
 
+## Local ports (dev stubs)
+
+| Service | Port | Notes |
+|---------|------|--------|
+| rag-gateway | 8080 | Spring Boot default |
+| agent-runtime | 8081 | Uvicorn in Dockerfile |
+
 ## Diagram
 
 ```mermaid
