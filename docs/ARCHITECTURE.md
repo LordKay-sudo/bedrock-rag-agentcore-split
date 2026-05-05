@@ -7,7 +7,7 @@
 
 ## Orchestration
 
-The edge (gateway or BFF) classifies the user request and routes to one path, both in sequence (e.g. RAG then agent for formatting/actions), or merges structured outputs. Routing rules and envelopes live under `contracts/`.
+**orchestration-edge** (port **8082**) is the HTTP entrypoint: it classifies the request and forwards the same JSON envelope to **rag-gateway** or **agent-runtime**. Routing rules and payloads are documented under `contracts/`. Sequential RAG-then-agent merges are not implemented yet.
 
 ## Failure domains
 
@@ -18,16 +18,17 @@ The edge (gateway or BFF) classifies the user request and routes to one path, bo
 
 | Service | Port | Notes |
 |---------|------|--------|
-| rag-gateway | 8080 | Spring Boot default |
+| orchestration-edge | 8082 | Routes to RAG or agent |
+| rag-gateway | 8080 | Spring Boot |
 | agent-runtime | 8081 | Uvicorn in Dockerfile |
 
 ## Diagram
 
 ```mermaid
 flowchart LR
-  Client --> Edge
-  Edge -->|retrieve + generate| RAG[RAG gateway]
-  Edge -->|tools / orchestration| Agent[AgentCore runtime]
+  Client --> Edge[orchestration-edge :8082]
+  Edge -->|POST /v1/query| RAG[rag-gateway :8080]
+  Edge -->|POST /v1/invoke| Agent[agent-runtime :8081]
   RAG --> KB[Knowledge Base / vectors]
   RAG --> Bedrock1[Bedrock]
   Agent --> Bedrock2[Bedrock]
