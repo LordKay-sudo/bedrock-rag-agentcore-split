@@ -1,0 +1,37 @@
+openapi: 3.0.3
+info:
+  title: Orchestration edge
+  version: 0.1.0
+  description: >
+    Public entrypoint. Forwards the same `QueryEnvelope` to rag-gateway or agent-runtime.
+servers:
+  - url: http://localhost:8082
+paths:
+  /actuator/health:
+    get:
+      summary: Liveness
+      tags: [ops]
+      responses:
+        "200":
+          description: UP
+  /v1/query:
+    post:
+      summary: Unified query (routes downstream)
+      tags: [query]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: ./openapi.yaml#/components/schemas/QueryEnvelope
+      responses:
+        "200":
+          description: Passthrough from downstream
+          content:
+            application/json:
+              schema:
+                $ref: ./openapi.yaml#/components/schemas/QueryResponse
+        "400":
+          description: Validation error
+        "502":
+          description: Downstream unavailable or error

@@ -13,6 +13,7 @@ Repository layout: **service contracts**, **documented tradeoffs**, and **infra 
 
 | Path | Responsibility |
 |------|----------------|
+| `services/orchestration-edge` | **Entry** `POST /v1/query`: routes to RAG or agent from `preferredPath` + **auto** heuristics. **Spring Boot**, port **8082**. |
 | `services/rag-gateway` | API that owns **retrieve-then-generate** (KB / vectors / Bedrock Converse). Intended stack: **Spring Boot**. |
 | `services/agent-runtime` | **Containerized agent** for AgentCore (tools, session behavior). Target: Python + `BedrockAgentCoreApp` pattern per AWS AgentCore docs. |
 | `contracts` | Shared **request/response envelopes** and routing rules so both paths stay compatible at the edge. |
@@ -26,10 +27,12 @@ Repository layout: **service contracts**, **documented tradeoffs**, and **infra 
 
 ## Current state
 
-- **rag-gateway**: Spring Boot 3.4, `POST /v1/query`, stub RAG service, actuator health, unit tests (`mvn verify`).
-- **agent-runtime**: FastAPI stub on port **8081**, Dockerfile, pytest.
-- **contracts**: JSON Schema + OpenAPI for the shared envelope.
-- **CI**: GitHub Actions (`.github/workflows/ci.yml`) runs Maven and pytest on `main` and PRs.
+- **orchestration-edge**: Spring Boot 3.4 on **8082**, forwards to rag (`/v1/query`) or agent (`/v1/invoke`), `RestClient` timeouts, 502 on downstream failure, tests (`mvn verify`).
+- **rag-gateway**: Spring Boot 3.4, `POST /v1/query`, stub RAG, Dockerfile.
+- **agent-runtime**: FastAPI stub on **8081**, Dockerfile, pytest.
+- **contracts**: JSON Schema + OpenAPI (including `orchestration-openapi.yaml`).
+- **docker-compose.yml**: builds and runs all three services (optional local stack).
+- **CI**: GitHub Actions runs Maven for both Java services and pytest for the agent.
 
 ## References
 

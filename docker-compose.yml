@@ -1,0 +1,21 @@
+services:
+  rag-gateway:
+    build: ./services/rag-gateway
+    ports:
+      - "8080:8080"
+
+  agent-runtime:
+    build: ./services/agent-runtime
+    ports:
+      - "8081:8081"
+
+  orchestration-edge:
+    build: ./services/orchestration-edge
+    ports:
+      - "8082:8082"
+    environment:
+      EDGE_RAG_BASE_URL: http://rag-gateway:8080
+      EDGE_AGENT_BASE_URL: http://agent-runtime:8081
+    depends_on:
+      - rag-gateway
+      - agent-runtime
