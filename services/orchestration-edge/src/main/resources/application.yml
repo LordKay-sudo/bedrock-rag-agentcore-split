@@ -13,6 +13,16 @@ edge:
     refill-seconds: 60
   request-guard:
     max-message-length: 2000
+  budget:
+    max-request-estimated-tokens: 4000
+    max-daily-estimated-tokens-per-client: 200000
+  cache:
+    enabled: true
+    ttl-seconds: 120
+  resilience:
+    retry-attempts: 2
+    circuit-breaker-failure-threshold: 3
+    circuit-breaker-cooldown-seconds: 30
 
 management:
   endpoints:

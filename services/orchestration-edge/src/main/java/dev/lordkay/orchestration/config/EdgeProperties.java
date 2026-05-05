@@ -12,6 +12,9 @@ public class EdgeProperties {
   private String agentBaseUrl = "http://127.0.0.1:8081";
   private final RateLimit rateLimit = new RateLimit();
   private final RequestGuard requestGuard = new RequestGuard();
+  private final Budget budget = new Budget();
+  private final Cache cache = new Cache();
+  private final Resilience resilience = new Resilience();
 
   public String getRagBaseUrl() {
     return ragBaseUrl;
@@ -35,6 +38,18 @@ public class EdgeProperties {
 
   public RequestGuard getRequestGuard() {
     return requestGuard;
+  }
+
+  public Budget getBudget() {
+    return budget;
+  }
+
+  public Cache getCache() {
+    return cache;
+  }
+
+  public Resilience getResilience() {
+    return resilience;
   }
 
   public static class RateLimit {
@@ -67,6 +82,78 @@ public class EdgeProperties {
 
     public void setMaxMessageLength(int maxMessageLength) {
       this.maxMessageLength = maxMessageLength;
+    }
+  }
+
+  public static class Budget {
+    private int maxRequestEstimatedTokens = 4000;
+    private int maxDailyEstimatedTokensPerClient = 200000;
+
+    public int getMaxRequestEstimatedTokens() {
+      return maxRequestEstimatedTokens;
+    }
+
+    public void setMaxRequestEstimatedTokens(int maxRequestEstimatedTokens) {
+      this.maxRequestEstimatedTokens = maxRequestEstimatedTokens;
+    }
+
+    public int getMaxDailyEstimatedTokensPerClient() {
+      return maxDailyEstimatedTokensPerClient;
+    }
+
+    public void setMaxDailyEstimatedTokensPerClient(int maxDailyEstimatedTokensPerClient) {
+      this.maxDailyEstimatedTokensPerClient = maxDailyEstimatedTokensPerClient;
+    }
+  }
+
+  public static class Cache {
+    private int ttlSeconds = 120;
+    private boolean enabled = true;
+
+    public int getTtlSeconds() {
+      return ttlSeconds;
+    }
+
+    public void setTtlSeconds(int ttlSeconds) {
+      this.ttlSeconds = ttlSeconds;
+    }
+
+    public boolean isEnabled() {
+      return enabled;
+    }
+
+    public void setEnabled(boolean enabled) {
+      this.enabled = enabled;
+    }
+  }
+
+  public static class Resilience {
+    private int retryAttempts = 2;
+    private int circuitBreakerFailureThreshold = 3;
+    private int circuitBreakerCooldownSeconds = 30;
+
+    public int getRetryAttempts() {
+      return retryAttempts;
+    }
+
+    public void setRetryAttempts(int retryAttempts) {
+      this.retryAttempts = retryAttempts;
+    }
+
+    public int getCircuitBreakerFailureThreshold() {
+      return circuitBreakerFailureThreshold;
+    }
+
+    public void setCircuitBreakerFailureThreshold(int circuitBreakerFailureThreshold) {
+      this.circuitBreakerFailureThreshold = circuitBreakerFailureThreshold;
+    }
+
+    public int getCircuitBreakerCooldownSeconds() {
+      return circuitBreakerCooldownSeconds;
+    }
+
+    public void setCircuitBreakerCooldownSeconds(int circuitBreakerCooldownSeconds) {
+      this.circuitBreakerCooldownSeconds = circuitBreakerCooldownSeconds;
     }
   }
 }

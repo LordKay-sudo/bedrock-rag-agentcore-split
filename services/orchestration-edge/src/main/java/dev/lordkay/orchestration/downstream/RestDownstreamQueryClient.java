@@ -14,22 +14,27 @@ public class RestDownstreamQueryClient implements DownstreamQueryPort {
 
   private final RestClient ragClient;
   private final RestClient agentClient;
+  private final DownstreamResilienceService resilienceService;
 
   public RestDownstreamQueryClient(
       @Qualifier("ragDownstreamRestClient") RestClient ragClient,
-      @Qualifier("agentDownstreamRestClient") RestClient agentClient) {
+      @Qualifier("agentDownstreamRestClient") RestClient agentClient,
+      DownstreamResilienceService resilienceService) {
     this.ragClient = ragClient;
     this.agentClient = agentClient;
+    this.resilienceService = resilienceService;
   }
 
   @Override
   public QueryResponse forwardRag(QueryEnvelope envelope) {
-    return postJson(ragClient, "/v1/query", envelope, "rag");
+    return resilienceService.executeWithPolicy(
+        "rag", () -> postJson(ragClient, "/v1/query", envelope, "rag"));
   }
 
   @Override
   public QueryResponse forwardAgent(QueryEnvelope envelope) {
-    return postJson(agentClient, "/v1/invoke", envelope, "agent");
+    return resilienceService.executeWithPolicy(
+        "agent", () -> postJson(agentClient, "/v1/invoke", envelope, "agent"));
   }
 
   private static QueryResponse postJson(

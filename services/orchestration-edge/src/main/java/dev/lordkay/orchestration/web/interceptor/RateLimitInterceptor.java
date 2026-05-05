@@ -10,6 +10,7 @@ import org.springframework.web.servlet.HandlerInterceptor;
 
 @Component
 public class RateLimitInterceptor implements HandlerInterceptor {
+  public static final String CLIENT_KEY_ATTR = "clientKey";
   private final RateLimitService rateLimitService;
 
   public RateLimitInterceptor(RateLimitService rateLimitService) {
@@ -19,6 +20,7 @@ public class RateLimitInterceptor implements HandlerInterceptor {
   @Override
   public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
     String key = resolveKey(request);
+    request.setAttribute(CLIENT_KEY_ATTR, key);
     if (!rateLimitService.allow(key)) {
       throw new ResponseStatusException(HttpStatus.TOO_MANY_REQUESTS, "rate_limit_exceeded");
     }
