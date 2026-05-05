@@ -1,41 +1,35 @@
 package dev.lordkay.orchestration.security;
 
+import dev.lordkay.orchestration.config.CacheConfig;
 import dev.lordkay.orchestration.config.EdgeProperties;
 import dev.lordkay.orchestration.model.QueryResponse;
-import java.time.Instant;
-import java.util.Map;
 import java.util.Optional;
-import java.util.concurrent.ConcurrentHashMap;
+import org.springframework.cache.Cache;
+import org.springframework.cache.CacheManager;
 import org.springframework.stereotype.Component;
 
 @Component
 public class ResponseCacheService {
-  private record CacheEntry(QueryResponse value, Instant expiresAt) {}
-
-  private final Map<String, CacheEntry> store = new ConcurrentHashMap<>();
+  private final Cache cache;
   private final EdgeProperties properties;
 
-  public ResponseCacheService(EdgeProperties properties) {
+  public ResponseCacheService(CacheManager cacheManager, EdgeProperties properties) {
+    this.cache = cacheManager.getCache(CacheConfig.QUERY_RESPONSE_CACHE);
     this.properties = properties;
   }
 
   public Optional<QueryResponse> get(String key) {
-    CacheEntry entry = store.get(key);
-    if (entry == null) {
+    if (cache == null) {
       return Optional.empty();
     }
-    if (entry.expiresAt.isBefore(Instant.now())) {
-      store.remove(key);
-      return Optional.empty();
-    }
-    return Optional.of(entry.value);
+    QueryResponse value = cache.get(key, QueryResponse.class);
+    return Optional.ofNullable(value);
   }
 
   public void put(String key, QueryResponse value) {
-    if (!properties.getCache().isEnabled()) {
+    if (!properties.getCache().isEnabled() || cache == null) {
       return;
     }
-    Instant expires = Instant.now().plusSeconds(properties.getCache().getTtlSeconds());
-    store.put(key, new CacheEntry(value, expires));
+    cache.put(key, value);
   }
 }

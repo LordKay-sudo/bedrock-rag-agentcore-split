@@ -19,6 +19,7 @@ edge:
   cache:
     enabled: true
     ttl-seconds: 120
+    maximum-size: 5000
   resilience:
     retry-attempts: 2
     circuit-breaker-failure-threshold: 3
