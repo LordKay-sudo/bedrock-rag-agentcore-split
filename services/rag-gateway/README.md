@@ -2,6 +2,24 @@
 
 Spring Boot service for the **retrieve-then-generate** path. `StubRagQueryService` returns deterministic placeholder content until Knowledge Base + Bedrock are wired.
 
+## Spring AI foundation mode
+
+The service now includes a **feature-flagged** Spring AI foundation path.
+
+- Default behavior remains stub-safe (`RAG_AI_ENABLED=false`).
+- When enabled (`RAG_AI_ENABLED=true`), `SpringAiRagQueryService` is activated and calls a Bedrock Converse chat model via Spring AI.
+- Retrieval/KB grounding is intentionally deferred to the next PR to keep this step low-risk.
+
+Example env vars:
+
+```bash
+RAG_AI_ENABLED=true
+AWS_REGION=us-east-1
+RAG_AI_MODEL=us.amazon.nova-pro-v1:0
+RAG_AI_TEMPERATURE=0.2
+RAG_AI_MAX_TOKENS=1024
+```
+
 ## Run
 
 Requires JDK 17 and Maven 3.9+.

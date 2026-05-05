@@ -6,7 +6,7 @@ import dev.lordkay.raggateway.model.QueryEnvelope;
 import dev.lordkay.raggateway.model.QueryResponse;
 import java.util.List;
 import java.util.UUID;
-import org.springframework.context.annotation.Primary;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Service;
 
 /**
@@ -14,7 +14,7 @@ import org.springframework.stereotype.Service;
  * (or Spring AI) while keeping the same {@link QueryEnvelope} / {@link QueryResponse} types.
  */
 @Service
-@Primary
+@ConditionalOnProperty(prefix = "rag.ai", name = "enabled", havingValue = "false", matchIfMissing = true)
 public class StubRagQueryService implements RagQueryService {
 
   @Override
