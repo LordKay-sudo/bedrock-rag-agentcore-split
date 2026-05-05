@@ -109,6 +109,7 @@ public class EdgeProperties {
   public static class Cache {
     private int ttlSeconds = 120;
     private boolean enabled = true;
+    private long maximumSize = 5000;
 
     public int getTtlSeconds() {
       return ttlSeconds;
@@ -124,6 +125,14 @@ public class EdgeProperties {
 
     public void setEnabled(boolean enabled) {
       this.enabled = enabled;
+    }
+
+    public long getMaximumSize() {
+      return maximumSize;
+    }
+
+    public void setMaximumSize(long maximumSize) {
+      this.maximumSize = maximumSize;
     }
   }
 
