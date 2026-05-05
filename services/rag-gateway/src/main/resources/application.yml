@@ -4,6 +4,24 @@ server:
 spring:
   application:
     name: rag-gateway
+  ai:
+    bedrock:
+      aws:
+        region: ${AWS_REGION:us-east-1}
+      converse:
+        chat:
+          options:
+            model: ${RAG_AI_MODEL:us.amazon.nova-pro-v1:0}
+            temperature: ${RAG_AI_TEMPERATURE:0.2}
+            max-tokens: ${RAG_AI_MAX_TOKENS:1024}
+
+rag:
+  ai:
+    enabled: "${RAG_AI_ENABLED:false}"
+    model: "${RAG_AI_MODEL:us.amazon.nova-pro-v1:0}"
+    system-prompt: "${RAG_AI_SYSTEM_PROMPT:You are a retrieval-first enterprise assistant. If evidence is missing, say so clearly.}"
+    max-tokens: "${RAG_AI_MAX_TOKENS:1024}"
+    temperature: "${RAG_AI_TEMPERATURE:0.2}"
 
 management:
   endpoints:
