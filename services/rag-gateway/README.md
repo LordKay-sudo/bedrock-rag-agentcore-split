@@ -20,6 +20,28 @@ RAG_AI_TEMPERATURE=0.2
 RAG_AI_MAX_TOKENS=1024
 ```
 
+## Retrieval mode (current PR)
+
+When `RAG_AI_ENABLED=true`, the AI path now executes a retrieve-then-generate flow through a retrieval abstraction.
+
+- `RetrievalPort` defines retrieval contract.
+- `KeywordRetrievalAdapter` is the deterministic local adapter used for predictable tests/dev.
+- Retrieved chunks are mapped to `QueryResponse.citations` (`sourceId`, `excerpt`).
+
+Retrieval settings:
+
+```bash
+RAG_RETRIEVAL_ENABLED=true
+RAG_RETRIEVAL_TOP_K=5
+RAG_RETRIEVAL_MIN_SCORE=0.0
+RAG_RETRIEVAL_MAX_EXCERPT_CHARS=300
+RAG_RETRIEVAL_NO_HIT_MODE=answer_without_citations
+```
+
+`RAG_RETRIEVAL_NO_HIT_MODE` values:
+- `answer_without_citations` -> continue generation without retrieved evidence.
+- `return_no_evidence` -> return deterministic no-evidence response with empty citations.
+
 ## Run
 
 Requires JDK 17 and Maven 3.9+.

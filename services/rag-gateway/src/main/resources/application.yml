@@ -22,6 +22,12 @@ rag:
     system-prompt: "${RAG_AI_SYSTEM_PROMPT:You are a retrieval-first enterprise assistant. If evidence is missing, say so clearly.}"
     max-tokens: "${RAG_AI_MAX_TOKENS:1024}"
     temperature: "${RAG_AI_TEMPERATURE:0.2}"
+    retrieval:
+      enabled: "${RAG_RETRIEVAL_ENABLED:true}"
+      top-k: "${RAG_RETRIEVAL_TOP_K:5}"
+      min-score: "${RAG_RETRIEVAL_MIN_SCORE:0.0}"
+      max-excerpt-chars: "${RAG_RETRIEVAL_MAX_EXCERPT_CHARS:300}"
+      no-hit-mode: "${RAG_RETRIEVAL_NO_HIT_MODE:answer_without_citations}"
 
 management:
   endpoints:
