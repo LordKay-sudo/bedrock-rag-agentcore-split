@@ -27,8 +27,8 @@ Repository layout: **service contracts**, **documented tradeoffs**, and **infra 
 
 ## Current state
 
-- **orchestration-edge**: Spring Boot 3.4 on **8082**, forwards to rag (`/v1/query`) or agent (`/v1/invoke`), request guards + rate limiting + correlation IDs, plus retry/circuit-breaker, cache, and budget checks.
-- **rag-gateway**: Spring Boot 3.4, `POST /v1/query`, stub RAG, Dockerfile.
+- **orchestration-edge**: Spring Boot 4.0 on **8082**, forwards to rag (`/v1/query`) or agent (`/v1/invoke`), request guards + rate limiting + correlation IDs, plus retry/circuit-breaker, cache, and budget checks.
+- **rag-gateway**: Spring Boot 4.0, `POST /v1/query`, Spring AI + retrieval/citations flow (feature-flagged), Dockerfile.
 - **agent-runtime**: FastAPI stub on **8081**, Dockerfile, pytest.
 - **contracts**: JSON Schema + OpenAPI (including `orchestration-openapi.yaml`).
 - **docker-compose.yml**: builds and runs all three services (optional local stack).

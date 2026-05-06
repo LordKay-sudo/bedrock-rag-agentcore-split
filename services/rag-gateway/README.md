@@ -42,6 +42,22 @@ RAG_RETRIEVAL_NO_HIT_MODE=answer_without_citations
 - `answer_without_citations` -> continue generation without retrieved evidence.
 - `return_no_evidence` -> return deterministic no-evidence response with empty citations.
 
+## Observability and guardrails
+
+The AI path emits lightweight metrics via Micrometer:
+
+- `rag.retrieval.requests`
+- `rag.retrieval.hits`
+- `rag.generation.duration`
+- `rag.generation.success`
+- `rag.generation.failures`
+
+Safety behavior:
+
+- no-hit mode can return deterministic no-evidence responses
+- generation failures return sanitized user-safe fallback text
+- logs include retrieval hit counts and correlation identifiers, but avoid logging full prompt bodies
+
 ## Run
 
 Requires JDK 17 and Maven 3.9+.
