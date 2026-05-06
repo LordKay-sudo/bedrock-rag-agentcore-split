@@ -10,6 +10,8 @@ import dev.lordkay.raggateway.retrieval.RetrievalOptions;
 import dev.lordkay.raggateway.retrieval.RetrievalPort;
 import java.util.List;
 import java.util.UUID;
+import io.micrometer.core.instrument.MeterRegistry;
+import io.micrometer.core.instrument.Timer;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -30,12 +32,17 @@ public class SpringAiRagQueryService implements RagQueryService {
   private final ChatClient chatClient;
   private final RagAiProperties properties;
   private final RetrievalPort retrievalPort;
+  private final MeterRegistry meterRegistry;
 
   public SpringAiRagQueryService(
-      ChatClient.Builder chatClientBuilder, RagAiProperties properties, RetrievalPort retrievalPort) {
+      ChatClient.Builder chatClientBuilder,
+      RagAiProperties properties,
+      RetrievalPort retrievalPort,
+      MeterRegistry meterRegistry) {
     this.chatClient = chatClientBuilder.build();
     this.properties = properties;
     this.retrievalPort = retrievalPort;
+    this.meterRegistry = meterRegistry;
   }
 
   @Override
@@ -60,6 +67,8 @@ public class SpringAiRagQueryService implements RagQueryService {
         properties.getRetrieval().isEnabled()
             ? retrievalPort.retrieve(envelope.message(), options)
             : List.of();
+    meterRegistry.counter("rag.retrieval.requests").increment();
+    meterRegistry.summary("rag.retrieval.hits").record(chunks.size());
 
     logger.info(
         "rag_retrieval correlationId={} hits={} topK={} minScore={}",
@@ -78,6 +87,7 @@ public class SpringAiRagQueryService implements RagQueryService {
 
     String userPrompt = buildGroundedPrompt(envelope.message(), chunks);
     String text;
+    Timer.Sample sample = Timer.start(meterRegistry);
     try {
       text =
           chatClient
@@ -87,6 +97,8 @@ public class SpringAiRagQueryService implements RagQueryService {
               .call()
               .content();
     } catch (RuntimeException ex) {
+      sample.stop(meterRegistry.timer("rag.generation.duration"));
+      meterRegistry.counter("rag.generation.failures").increment();
       logger.warn("rag_generation_failed correlationId={} reason={}", correlationId, ex.toString());
       return new QueryResponse(
           correlationId,
@@ -94,6 +106,8 @@ public class SpringAiRagQueryService implements RagQueryService {
           "Generation temporarily unavailable. Please retry.",
           chunks.stream().map(c -> new Citation(c.sourceId(), c.excerpt())).toList());
     }
+    sample.stop(meterRegistry.timer("rag.generation.duration"));
+    meterRegistry.counter("rag.generation.success").increment();
 
     return new QueryResponse(
         correlationId,
