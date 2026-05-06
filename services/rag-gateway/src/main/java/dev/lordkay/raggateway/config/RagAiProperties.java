@@ -10,6 +10,7 @@ public class RagAiProperties {
       "You are a retrieval-first enterprise assistant. If evidence is missing, say so clearly.";
   private int maxTokens = 1024;
   private double temperature = 0.2;
+  private final Retrieval retrieval = new Retrieval();
 
   public boolean isEnabled() {
     return enabled;
@@ -49,5 +50,57 @@ public class RagAiProperties {
 
   public void setTemperature(double temperature) {
     this.temperature = temperature;
+  }
+
+  public Retrieval getRetrieval() {
+    return retrieval;
+  }
+
+  public static class Retrieval {
+    private boolean enabled = true;
+    private int topK = 5;
+    private Double minScore;
+    private int maxExcerptChars = 300;
+    private String noHitMode = "answer_without_citations";
+
+    public boolean isEnabled() {
+      return enabled;
+    }
+
+    public void setEnabled(boolean enabled) {
+      this.enabled = enabled;
+    }
+
+    public int getTopK() {
+      return topK;
+    }
+
+    public void setTopK(int topK) {
+      this.topK = topK;
+    }
+
+    public Double getMinScore() {
+      return minScore;
+    }
+
+    public void setMinScore(Double minScore) {
+      this.minScore = minScore;
+    }
+
+    public int getMaxExcerptChars() {
+      return maxExcerptChars;
+    }
+
+    public void setMaxExcerptChars(int maxExcerptChars) {
+      this.maxExcerptChars = maxExcerptChars;
+    }
+
+    public String getNoHitMode() {
+      return noHitMode;
+    }
+
+    public void setNoHitMode(String noHitMode) {
+      this.noHitMode = noHitMode;
+    }
   }
 }
